@@ -99,6 +99,7 @@
                     <button onclick="scrollToSection('growth-system')" class="hover:text-emerald-600 px-4 py-2 rounded-full hover:bg-emerald-50 text-stone-600 font-medium transition">技能與勳章</button>
                     <button onclick="scrollToSection('weapon-system')" class="hover:text-emerald-600 px-4 py-2 rounded-full hover:bg-emerald-50 text-stone-600 font-medium transition">武器進化</button>
                     <button onclick="scrollToSection('enhance')" class="hover:text-emerald-600 px-4 py-2 rounded-full hover:bg-emerald-50 text-stone-600 font-medium transition">強化系統</button>
+                    <button onclick="scrollToSection('gacha')" class="hover:text-emerald-600 px-4 py-2 rounded-full hover:bg-emerald-50 text-stone-600 font-medium transition">抽獎機率</button>
                 </div>
                 <!-- Mobile Menu Button -->
                 <div class="flex items-center xl:hidden">
@@ -117,6 +118,7 @@
                 <button onclick="scrollToSection('growth-system'); toggleMobileMenu()" class="block w-full text-left px-4 py-3 text-stone-600 hover:bg-emerald-50 hover:text-emerald-600 rounded-xl transition font-medium">技能與勳章</button>
                 <button onclick="scrollToSection('weapon-system'); toggleMobileMenu()" class="block w-full text-left px-4 py-3 text-stone-600 hover:bg-emerald-50 hover:text-emerald-600 rounded-xl transition font-medium">武器進化</button>
                 <button onclick="scrollToSection('enhance'); toggleMobileMenu()" class="block w-full text-left px-4 py-3 text-stone-600 hover:bg-emerald-50 hover:text-emerald-600 rounded-xl transition font-medium">強化系統</button>
+                <button onclick="scrollToSection('gacha'); toggleMobileMenu()" class="block w-full text-left px-4 py-3 text-stone-600 hover:bg-emerald-50 hover:text-emerald-600 rounded-xl transition font-medium">抽獎機率</button>
             </div>
         </div>
     </nav>
@@ -566,6 +568,170 @@
                 <h3 class="text-2xl font-bold text-emerald-800 mb-6 text-center">時裝星力成功率趨勢</h3>
                 <div class="chart-container">
                     <canvas id="starForceChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section: Gacha Rates -->
+    <section id="gacha" class="w-full px-4 sm:px-8 lg:px-12 py-24 bg-stone-50 border-t border-stone-200">
+        <div class="max-w-[1400px] mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-bold text-emerald-800 mb-4">🎲 抽獎物品與機率</h2>
+                <p class="text-lg text-stone-600 max-w-3xl mx-auto">
+                    本區整理自「玩家手冊 - 抽獎物」PDF，提供主要抽獎箱的高價物與參考機率。
+                    部分為精簡版說明，實際內容與最終機率仍以遊戲內公告為主。
+                </p>
+            </div>
+
+            <!-- Gacha Type Overview -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-10">
+                <div class="bg-white rounded-2xl border border-stone-200 p-4 text-center shadow-sm">
+                    <h3 class="font-bold text-stone-800 mb-1">黃金蘋果</h3>
+                    <p class="text-sm text-stone-500">高價戒指 / 特殊圖騰 / 方塊</p>
+                </div>
+                <div class="bg-white rounded-2xl border border-stone-200 p-4 text-center shadow-sm">
+                    <h3 class="font-bold text-stone-800 mb-1">魔法豎琴</h3>
+                    <p class="text-sm text-stone-500">靈魂寶珠 / 皮卡啾 / 魔法靈氣</p>
+                </div>
+                <div class="bg-white rounded-2xl border border-stone-200 p-4 text-center shadow-sm">
+                    <h3 class="font-bold text-stone-800 mb-1">星光錦囊</h3>
+                    <p class="text-sm text-stone-500">星彩 / 救世 / 命運 / 榮耀卷</p>
+                </div>
+                <div class="bg-white rounded-2xl border border-stone-200 p-4 text-center shadow-sm">
+                    <h3 class="font-bold text-stone-800 mb-1">魔法畫框</h3>
+                    <p class="text-sm text-stone-500">星力卷 / 追加卷 / 傳說附加卷</p>
+                </div>
+                <div class="bg-white rounded-2xl border border-stone-200 p-4 text-center shadow-sm">
+                    <h3 class="font-bold text-stone-800 mb-1">潘朵拉箱子</h3>
+                    <p class="text-sm text-stone-500">造型裝備 / 面具 / 披風等外觀</p>
+                </div>
+            </div>
+
+            <!-- Sample Rate Table (Condensed) -->
+            <div class="bg-white rounded-2xl shadow-sm border border-stone-200 overflow-hidden">
+                <div class="table-responsive">
+                    <table class="w-full text-left text-sm md:text-base">
+                        <thead class="bg-stone-50 text-stone-600 border-b border-stone-200">
+                            <tr>
+                                <th class="px-4 md:px-6 py-3 font-bold">抽獎類型</th>
+                                <th class="px-4 md:px-6 py-3 font-bold">物品名稱</th>
+                                <th class="px-4 md:px-6 py-3 font-bold">機率</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-stone-100">
+                            <!-- 黃金蘋果（部分範例） -->
+                            <tr class="hover:bg-stone-50 transition">
+                                <td class="px-4 md:px-6 py-3 font-semibold text-amber-700">黃金蘋果</td>
+                                <td class="px-4 md:px-6 py-3">燃燒戒指 (1)</td>
+                                <td class="px-4 md:px-6 py-3 text-stone-500">0.075%</td>
+                            </tr>
+                            <tr class="hover:bg-stone-50 transition">
+                                <td class="px-4 md:px-6 py-3 font-semibold text-amber-700">黃金蘋果</td>
+                                <td class="px-4 md:px-6 py-3">艾爾達斯的祝福戒指 (1)</td>
+                                <td class="px-4 md:px-6 py-3 text-stone-500">0.075%</td>
+                            </tr>
+                            <tr class="hover:bg-stone-50 transition">
+                                <td class="px-4 md:px-6 py-3 font-semibold text-amber-700">黃金蘋果</td>
+                                <td class="px-4 md:px-6 py-3">幽暗戒指 (1)</td>
+                                <td class="px-4 md:px-6 py-3 text-stone-500">0.075%</td>
+                            </tr>
+                            <tr class="hover:bg-stone-50 transition">
+                                <td class="px-4 md:px-6 py-3 font-semibold text-amber-700">黃金蘋果</td>
+                                <td class="px-4 md:px-6 py-3">苦行的戒指 (1)</td>
+                                <td class="px-4 md:px-6 py-3 text-stone-500">0.075%</td>
+                            </tr>
+                            <tr class="hover:bg-stone-50 transition">
+                                <td class="px-4 md:px-6 py-3 font-semibold text-amber-700">黃金蘋果</td>
+                                <td class="px-4 md:px-6 py-3">麥吉鑄幣</td>
+                                <td class="px-4 md:px-6 py-3 text-stone-500">22.000%</td>
+                            </tr>
+
+                            <!-- 魔法豎琴（部分範例） -->
+                            <tr class="hover:bg-stone-50 transition">
+                                <td class="px-4 md:px-6 py-3 font-semibold text-sky-700">魔法豎琴</td>
+                                <td class="px-4 md:px-6 py-3">瑪麗西亞靈魂寶珠</td>
+                                <td class="px-4 md:px-6 py-3 text-stone-500">0.25%</td>
+                            </tr>
+                            <tr class="hover:bg-stone-50 transition">
+                                <td class="px-4 md:px-6 py-3 font-semibold text-sky-700">魔法豎琴</td>
+                                <td class="px-4 md:px-6 py-3">武功靈魂寶珠</td>
+                                <td class="px-4 md:px-6 py-3 text-stone-500">0.25%</td>
+                            </tr>
+                            <tr class="hover:bg-stone-50 transition">
+                                <td class="px-4 md:px-6 py-3 font-semibold text-sky-700">魔法豎琴</td>
+                                <td class="px-4 md:px-6 py-3">滅龍騎士鎧甲</td>
+                                <td class="px-4 md:px-6 py-3 text-stone-500">0.50%</td>
+                            </tr>
+                            <tr class="hover:bg-stone-50 transition">
+                                <td class="px-4 md:px-6 py-3 font-semibold text-sky-700">魔法豎琴</td>
+                                <td class="px-4 md:px-6 py-3">艾畢奈亞</td>
+                                <td class="px-4 md:px-6 py-3 text-stone-500">3.50%</td>
+                            </tr>
+                            <tr class="hover:bg-stone-50 transition">
+                                <td class="px-4 md:px-6 py-3 font-semibold text-sky-700">魔法豎琴</td>
+                                <td class="px-4 md:px-6 py-3">皮卡啾</td>
+                                <td class="px-4 md:px-6 py-3 text-stone-500">3.50%</td>
+                            </tr>
+                            <tr class="hover:bg-stone-50 transition">
+                                <td class="px-4 md:px-6 py-3 font-semibold text-sky-700">魔法豎琴</td>
+                                <td class="px-4 md:px-6 py-3">魔法靈氣</td>
+                                <td class="px-4 md:px-6 py-3 text-stone-500">20.00%</td>
+                            </tr>
+
+                            <!-- 星光錦囊 / 魔法畫框 / 潘朵拉箱子 精選 -->
+                            <tr class="hover:bg-stone-50 transition">
+                                <td class="px-4 md:px-6 py-3 font-semibold text-violet-700">星光錦囊</td>
+                                <td class="px-4 md:px-6 py-3">星彩 5%</td>
+                                <td class="px-4 md:px-6 py-3 text-stone-500">依 PDF 設定</td>
+                            </tr>
+                            <tr class="hover:bg-stone-50 transition">
+                                <td class="px-4 md:px-6 py-3 font-semibold text-violet-700">星光錦囊</td>
+                                <td class="px-4 md:px-6 py-3">救世 10%</td>
+                                <td class="px-4 md:px-6 py-3 text-stone-500">依 PDF 設定</td>
+                            </tr>
+                            <tr class="hover:bg-stone-50 transition">
+                                <td class="px-4 md:px-6 py-3 font-semibold text-violet-700">星光錦囊</td>
+                                <td class="px-4 md:px-6 py-3">命運 15%</td>
+                                <td class="px-4 md:px-6 py-3 text-stone-500">依 PDF 設定</td>
+                            </tr>
+                            <tr class="hover:bg-stone-50 transition">
+                                <td class="px-4 md:px-6 py-3 font-semibold text-violet-700">星光錦囊</td>
+                                <td class="px-4 md:px-6 py-3">榮耀 20%</td>
+                                <td class="px-4 md:px-6 py-3 text-stone-500">依 PDF 設定</td>
+                            </tr>
+
+                            <tr class="hover:bg-stone-50 transition">
+                                <td class="px-4 md:px-6 py-3 font-semibold text-emerald-700">魔法畫框</td>
+                                <td class="px-4 md:px-6 py-3">25星力強化券</td>
+                                <td class="px-4 md:px-6 py-3 text-stone-500">0.05%</td>
+                            </tr>
+                            <tr class="hover:bg-stone-50 transition">
+                                <td class="px-4 md:px-6 py-3 font-semibold text-emerald-700">魔法畫框</td>
+                                <td class="px-4 md:px-6 py-3">20星力強化券</td>
+                                <td class="px-4 md:px-6 py-3 text-stone-500">5.00%</td>
+                            </tr>
+                            <tr class="hover:bg-stone-50 transition">
+                                <td class="px-4 md:px-6 py-3 font-semibold text-emerald-700">魔法畫框</td>
+                                <td class="px-4 md:px-6 py-3">19星力強化券</td>
+                                <td class="px-4 md:px-6 py-3 text-stone-500">10.00%</td>
+                            </tr>
+
+                            <tr class="hover:bg-stone-50 transition">
+                                <td class="px-4 md:px-6 py-3 font-semibold text-rose-700">潘朵拉箱子</td>
+                                <td class="px-4 md:px-6 py-3">奇異的狐狸面具</td>
+                                <td class="px-4 md:px-6 py-3 text-stone-500">0.15%</td>
+                            </tr>
+                            <tr class="hover:bg-stone-50 transition">
+                                <td class="px-4 md:px-6 py-3 font-semibold text-rose-700">潘朵拉箱子</td>
+                                <td class="px-4 md:px-6 py-3">天照之眼</td>
+                                <td class="px-4 md:px-6 py-3 text-stone-500">0.15%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="px-4 md:px-6 py-4 bg-stone-50 border-t border-stone-200 text-xs md:text-sm text-stone-500">
+                    ※ 上表為 PDF 中部分代表性道具與機率節錄，完整清單可參考「玩家手冊 - 抽獎物」原檔或管理員公告。
                 </div>
             </div>
         </div>
