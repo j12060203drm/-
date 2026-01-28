@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小樹谷：冒險者互動指南</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap');
+        body { font-family: 'Noto Sans TC', sans-serif; }
+        
+        /* 基礎設置與滾動條優化 */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f5f5f4; }
+        ::-webkit-scrollbar-thumb { background: #d6d3d1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #a8a29e; }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px; 
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 450px;
+        }
+
+        .active-tab {
+            border-bottom: 3px solid #059669; 
+            color: #059669;
+            font-weight: 700;
+        }
+        
+        .timeline-connector {
+            flex-grow: 1;
+            height: 2px;
+            background-color: #e5e7eb; 
+        }
+        .timeline-step.active .timeline-dot {
+            background-color: #10b981;
+            border-color: #ecfdf5;
+            transform: scale(1.1);
+        }
+        .timeline-step.active .timeline-text {
+            color: #047857;
+            font-weight: bold;
+        }
+        
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* 進化箭頭樣式 */
+        .evolution-arrow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #9ca3af;
+            font-size: 2rem;
+            transition: color 0.3s;
+        }
+        .evolution-wrapper:hover .evolution-arrow {
+            color: #10b981;
+        }
+        @media (min-width: 1024px) {
+            .evolution-arrow { font-size: 3rem; transform: rotate(0deg); }
+        }
+        @media (max-width: 1023px) {
+            .evolution-arrow { transform: rotate(90deg); padding: 1.5rem 0; }
+        }
+
+        .skill-card {
+            transition: all 0.3s ease;
+        }
+        .skill-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px -5px rgba(16, 185, 129, 0.2);
+        }
+    </style>
+</head>
+<body class="bg-stone-50 text-stone-800 selection:bg-emerald-100 selection:text-emerald-800">
+
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm sticky top-0 z-50 w-full backdrop-blur-md bg-white/90">
+        <div class="w-full px-4 sm:px-8 lg:px-12">
+            <div class="flex justify-between h-20 items-center">
+                <div class="flex items-center flex-shrink-0">
+                    <span class="text-2xl font-bold text-emerald-700 flex items-center tracking-tight">
+                        <span class="mr-2 text-3xl">🌲</span> 小樹谷指南
+                    </span>
+                </div>
+                <!-- Desktop Menu -->
+                <div class="hidden xl:flex items-center space-x-4">
+                    <button onclick="scrollToSection('hero')" class="hover:text-emerald-600 px-4 py-2 rounded-full hover:bg-emerald-50 text-stone-600 font-medium transition">核心目標</button>
+                    <button onclick="scrollToSection('routine')" class="hover:text-emerald-600 px-4 py-2 rounded-full hover:bg-emerald-50 text-stone-600 font-medium transition">日常任務</button>
+                    <button onclick="scrollToSection('growth-system')" class="hover:text-emerald-600 px-4 py-2 rounded-full hover:bg-emerald-50 text-stone-600 font-medium transition">技能與勳章</button>
+                    <button onclick="scrollToSection('weapon-system')" class="hover:text-emerald-600 px-4 py-2 rounded-full hover:bg-emerald-50 text-stone-600 font-medium transition">武器進化</button>
+                    <button onclick="scrollToSection('enhance')" class="hover:text-emerald-600 px-4 py-2 rounded-full hover:bg-emerald-50 text-stone-600 font-medium transition">強化系統</button>
+                    <button onclick="scrollToSection('roadmap')" class="hover:text-emerald-600 px-4 py-2 rounded-full hover:bg-emerald-50 text-stone-600 font-medium transition">七日進程</button>
+                </div>
+                <!-- Mobile Menu Button -->
+                <div class="flex items-center xl:hidden">
+                    <button onclick="document.getElementById('mobile-menu').classList.toggle('hidden')" class="text-stone-500 hover:text-emerald-600 p-2 text-2xl focus:outline-none">
+                        ☰
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Dropdown -->
+        <div id="mobile-menu" class="hidden xl:hidden bg-white border-t border-stone-100 shadow-lg absolute w-full">
+            <div class="px-4 pt-2 pb-4 space-y-2">
+                <button onclick="scrollToSection('hero'); toggleMobileMenu()" class="block w-full text-left px-4 py-3 text-stone-600 hover:bg-emerald-50 hover:text-emerald-600 rounded-xl transition font-medium">核心目標</button>
+                <button onclick="scrollToSection('routine'); toggleMobileMenu()" class="block w-full text-left px-4 py-3 text-stone-600 hover:bg-emerald-50 hover:text-emerald-600 rounded-xl transition font-medium">日常任務</button>
+                <button onclick="scrollToSection('growth-system'); toggleMobileMenu()" class="block w-full text-left px-4 py-3 text-stone-600 hover:bg-emerald-50 hover:text-emerald-600 rounded-xl transition font-medium">技能與勳章</button>
+                <button onclick="scrollToSection('weapon-system'); toggleMobileMenu()" class="block w-full text-left px-4 py-3 text-stone-600 hover:bg-emerald-50 hover:text-emerald-600 rounded-xl transition font-medium">武器進化</button>
+                <button onclick="scrollToSection('enhance'); toggleMobileMenu()" class="block w-full text-left px-4 py-3 text-stone-600 hover:bg-emerald-50 hover:text-emerald-600 rounded-xl transition font-medium">強化系統</button>
+                <button onclick="scrollToSection('roadmap'); toggleMobileMenu()" class="block w-full text-left px-4 py-3 text-stone-600 hover:bg-emerald-50 hover:text-emerald-600 rounded-xl transition font-medium">七日進程</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Section 1: Hero -->
+    <section id="hero" class="w-full px-4 sm:px-8 lg:px-12 py-20 bg-gradient-to-b from-white to-stone-50">
+        <div class="max-w-[1400px] mx-auto text-center">
+            <h1 class="text-5xl lg:text-6xl font-extrabold text-emerald-800 mb-6 tracking-tight">冒險者的成長起點</h1>
+            <p class="text-xl text-stone-600 max-w-3xl mx-auto leading-relaxed mb-16">
+                小樹谷是一個主打「快速培養、資源豐厚」的環境。在這裡，你的強大來自於每日的積累與對裝備的極致追求。
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-white rounded-3xl p-8 border border-stone-100 shadow-md hover:shadow-lg transition transform hover:-translate-y-1">
+                    <div class="text-6xl mb-6">💪</div>
+                    <h3 class="text-2xl font-bold mb-3 text-stone-800">帳號育成</h3>
+                    <p class="text-stone-600 leading-relaxed">提升帳號等級，領取海量資源與 ARC/AUT 符文。</p>
+                </div>
+                <div class="bg-white rounded-3xl p-8 border border-stone-100 shadow-md hover:shadow-lg transition transform hover:-translate-y-1">
+                    <div class="text-6xl mb-6">⚔️</div>
+                    <h3 class="text-2xl font-bold mb-3 text-stone-800">頂級裝備</h3>
+                    <p class="text-stone-600 leading-relaxed">攻略每日與每週 BOSS，拼取畢業武器與飾品。</p>
+                </div>
+                <div class="bg-white rounded-3xl p-8 border border-stone-100 shadow-md hover:shadow-lg transition transform hover:-translate-y-1">
+                    <div class="text-6xl mb-6">🌱</div>
+                    <h3 class="text-2xl font-bold mb-3 text-stone-800">每日積累</h3>
+                    <p class="text-stone-600 leading-relaxed">透過光合素與勳章養成，獲得強大的專屬能力加成。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 2: Routine Tracker -->
+    <section id="routine" class="w-full px-4 sm:px-8 lg:px-12 py-24 bg-stone-100">
+        <div class="max-w-[1400px] mx-auto">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
+                <div>
+                    <h2 class="text-4xl font-bold text-emerald-800">副本與任務：核心獎勵</h2>
+                    <p class="mt-3 text-lg text-stone-600">這是你變強的基石，請務必每日完成。</p>
+                </div>
+                <div class="bg-white p-1.5 rounded-2xl flex border border-stone-200 shadow-sm">
+                    <button onclick="setRoutine('daily')" id="btn-daily" class="px-8 py-3 rounded-xl text-lg font-bold shadow-md bg-stone-800 text-white transition-all">每日 (Daily)</button>
+                    <button onclick="setRoutine('weekly')" id="btn-weekly" class="px-8 py-3 rounded-xl text-lg font-bold text-stone-500 hover:text-stone-700 transition-all">每週 (Weekly)</button>
+                </div>
+            </div>
+            <div id="routine-container" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+                <!-- JS Population Area -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 3: Growth Systems -->
+    <section id="growth-system" class="w-full px-4 sm:px-8 lg:px-12 py-24 bg-white">
+        <div class="max-w-[1400px] mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold text-emerald-800 mb-4">💡 專有技能與勳章成長</h2>
+                <p class="text-lg text-stone-600 max-w-3xl mx-auto">
+                    裝備之外的隱藏戰力。善用每日獎勵獲得的「光合素」與「生命之水」，突破角色的能力上限。
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+                <!-- 光合素系統 -->
+                <div class="bg-amber-50/50 rounded-3xl p-8 lg:p-10 border border-amber-100 shadow-sm">
+                    <div class="flex items-center mb-8">
+                        <div class="bg-gradient-to-br from-amber-400 to-orange-500 text-white w-16 h-16 rounded-2xl flex items-center justify-center text-3xl shadow-lg mr-6 flex-shrink-0">☀️</div>
+                        <div>
+                            <h3 class="text-3xl font-bold text-stone-800">光合素系統</h3>
+                            <p class="text-amber-700 font-medium">自然修練技能升級</p>
+                        </div>
+                    </div>
+                    <div class="space-y-6">
+                        <div class="bg-white p-5 rounded-2xl border border-amber-100 shadow-sm">
+                            <span class="text-amber-600 text-xs font-bold uppercase tracking-wider mb-1 block">獲取方式</span>
+                            <p class="text-stone-700 font-medium">透過 <span class="text-amber-600 font-bold">[每日獎勵]</span> 與 <span class="text-amber-600 font-bold">[在線獎勵]</span> 穩定領取。</p>
+                        </div>
+                        <div class="bg-white p-5 rounded-2xl border border-amber-100 shadow-sm">
+                            <span class="text-amber-600 text-xs font-bold uppercase tracking-wider mb-1 block">使用途徑</span>
+                            <p class="text-stone-700">光合素商店購買 <span class="font-bold">自然修練法本</span> ($300/本)，<span class="text-rose-500 font-bold">每日限購 1 本</span>。</p>
+                        </div>
+                        
+                        <!-- Skill Cards -->
+                        <div class="grid grid-cols-2 gap-3 mt-4">
+                            <div class="skill-card bg-gradient-to-br from-emerald-600 to-teal-700 text-white p-4 rounded-xl text-center shadow">
+                                <span class="block text-xs text-emerald-100 mb-1">四屬性 UP</span>
+                                <span class="font-bold text-lg">深根固柢</span>
+                            </div>
+                            <div class="skill-card bg-gradient-to-br from-emerald-600 to-teal-700 text-white p-4 rounded-xl text-center shadow">
+                                <span class="block text-xs text-emerald-100 mb-1">無視防禦 UP</span>
+                                <span class="font-bold text-lg">破土而出</span>
+                            </div>
+                            <div class="skill-card bg-gradient-to-br from-emerald-600 to-teal-700 text-white p-4 rounded-xl text-center shadow">
+                                <span class="block text-xs text-emerald-100 mb-1">總傷害 UP</span>
+                                <span class="font-bold text-lg">繁花盛開</span>
+                            </div>
+                            <div class="skill-card bg-gradient-to-br from-emerald-600 to-teal-700 text-white p-4 rounded-xl text-center shadow">
+                                <span class="block text-xs text-emerald-100 mb-1">爆擊傷害 UP</span>
+                                <span class="font-bold text-lg">勢如破竹</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 植物勳章系統 -->
+                <div class="bg-emerald-50/50 rounded-3xl p-8 lg:p-10 border border-emerald-100 shadow-sm">
+                    <div class="flex items-center mb-8">
+                        <div class="bg-gradient-to-br from-emerald-400 to-green-600 text-white w-16 h-16 rounded-2xl flex items-center justify-center text-3xl shadow-lg mr-6 flex-shrink-0">🍀</div>
+                        <div>
+                            <h3 class="text-3xl font-bold text-stone-800">勳章養成計劃</h3>
+                            <p class="text-emerald-700 font-medium">50 天邁向畢業屬性</p>
+                        </div>
+                    </div>
+                    <div class="space-y-6">
+                        <!-- Progress Visualization -->
+                        <div class="bg-white p-6 rounded-2xl border border-emerald-100 shadow-sm">
+                            <h4 class="font-bold text-stone-700 mb-4 text-sm uppercase tracking-wide">成長階段預覽</h4>
+                            <div class="flex items-center justify-between px-2 relative">
+                                <!-- Steps -->
+                                <div class="flex flex-col items-center z-10">
+                                    <div class="w-8 h-8 bg-emerald-200 text-emerald-800 rounded-full flex items-center justify-center font-bold text-sm">1</div>
+                                    <span class="text-xs mt-2 font-medium text-stone-500">種子</span>
+                                </div>
+                                <div class="h-1 bg-emerald-100 flex-grow absolute left-0 right-0 top-4 -z-0 mx-8"></div>
+                                <div class="flex flex-col items-center z-10">
+                                    <div class="w-8 h-8 bg-emerald-200 text-emerald-800 rounded-full flex items-center justify-center font-bold text-sm">11</div>
+                                    <span class="text-xs mt-2 font-medium text-stone-500">小芽</span>
+                                </div>
+                                <div class="flex flex-col items-center z-10">
+                                    <div class="w-8 h-8 bg-emerald-200 text-emerald-800 rounded-full flex items-center justify-center font-bold text-sm">31</div>
+                                    <span class="text-xs mt-2 font-medium text-stone-500">幸運草</span>
+                                </div>
+                                <div class="flex flex-col items-center z-10">
+                                    <div class="w-10 h-10 bg-amber-400 text-white rounded-full flex items-center justify-center font-bold text-lg shadow-md ring-4 ring-amber-100">50</div>
+                                    <span class="text-xs mt-2 font-bold text-amber-600">茁壯(畢業)</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <ul class="space-y-4 text-stone-700">
+                            <li class="flex items-start">
+                                <span class="bg-emerald-100 text-emerald-600 rounded-full p-1 mr-3 mt-0.5"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg></span>
+                                <div><strong class="text-stone-800">每日澆水：</strong> 領取 <span class="text-emerald-600 font-bold">[生命之水]</span>，找園長對話升級。</div>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="bg-emerald-100 text-emerald-600 rounded-full p-1 mr-3 mt-0.5"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg></span>
+                                <div><strong class="text-stone-800">屬性躍遷：</strong> 最終階段提供 <span class="text-rose-500 font-bold">+26 萬戰鬥力</span> 加成。</div>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="bg-emerald-100 text-emerald-600 rounded-full p-1 mr-3 mt-0.5"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg></span>
+                                <div><strong class="text-stone-800">溢出資源：</strong> 第 50 天後，多餘的生命之水可兌換 <span class="font-bold">[採收禮包]</span>。</div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section: Weapon Evolution -->
+    <section id="weapon-system" class="w-full px-4 sm:px-8 lg:px-12 py-24 bg-stone-50 border-t border-stone-200">
+        <div class="max-w-[1400px] mx-auto evolution-wrapper">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold text-emerald-800 mb-4">🌌 終極神兵：創世與命運</h2>
+                <p class="text-lg text-stone-600 max-w-4xl mx-auto">
+                    這是一條漫長但回報豐厚的道路。從封印解除到永恆昇華，打造屬於你的最強兵器。
+                </p>
+            </div>
+
+            <div class="flex flex-col lg:flex-row items-stretch justify-center gap-6 lg:gap-8">
+                <!-- 第一階 -->
+                <div class="lg:w-1/3 bg-white p-8 rounded-3xl border border-stone-200 shadow-sm hover:border-emerald-400 transition flex flex-col">
+                    <div class="text-emerald-600 font-extrabold text-sm tracking-widest mb-2 uppercase">Stage 01</div>
+                    <h3 class="text-2xl font-bold text-stone-800 mb-6">封印的創世武器</h3>
+                    
+                    <div class="bg-stone-50 p-4 rounded-xl border border-stone-100 mb-4 flex-grow">
+                        <span class="text-stone-500 text-xs font-bold uppercase mb-2 block">📥 獲取條件</span>
+                        <p class="text-stone-700 font-medium">點擊 NPC 免費領取箱子。</p>
+                    </div>
+                    
+                    <div class="bg-emerald-50 p-4 rounded-xl border border-emerald-100">
+                        <span class="text-emerald-700 text-xs font-bold uppercase mb-2 block">📤 獲得物品</span>
+                        <div class="flex items-center font-bold text-stone-800">
+                            <span class="text-xl mr-2">🗡️</span> [封印創世武器]
+                        </div>
+                    </div>
+                </div>
+
+                <div class="evolution-arrow">➜</div>
+
+                <!-- 第二階 -->
+                <div class="lg:w-1/3 bg-white p-8 rounded-3xl border border-stone-200 shadow-md hover:border-emerald-400 transition flex flex-col relative overflow-hidden">
+                    <div class="absolute top-0 right-0 bg-emerald-500 text-white text-xs font-bold px-3 py-1 rounded-bl-xl">解放</div>
+                    <div class="text-emerald-600 font-extrabold text-sm tracking-widest mb-2 uppercase">Stage 02</div>
+                    <h3 class="text-2xl font-bold text-stone-800 mb-6">創世武器 (解放)</h3>
+                    
+                    <div class="bg-stone-50 p-4 rounded-xl border border-stone-100 mb-4 flex-grow space-y-2">
+                        <span class="text-stone-500 text-xs font-bold uppercase mb-2 block">📥 獲取條件</span>
+                        <ul class="text-sm text-stone-700 space-y-1">
+                            <li>1. 擊敗 <span class="font-bold">[黑魔法師-困難]</span> 取得箱子</li>
+                            <li>2. 收集 <span class="text-blue-600 font-bold">命運武器氣息 x7</span> (Happy Day)</li>
+                            <li>3. <span class="text-rose-500 font-bold">消耗</span> 封印創世武器</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bg-emerald-50 p-4 rounded-xl border border-emerald-100">
+                        <span class="text-emerald-700 text-xs font-bold uppercase mb-2 block">📤 獲得物品</span>
+                        <div class="flex items-center font-bold text-stone-800">
+                            <span class="text-xl mr-2">⚔️</span> [創世武器]
+                        </div>
+                    </div>
+                </div>
+
+                <div class="evolution-arrow">➜</div>
+
+                <!-- 最終階 -->
+                <div class="lg:w-1/3 bg-gradient-to-br from-white to-amber-50 p-8 rounded-3xl border border-amber-200 shadow-xl hover:border-amber-400 transition flex flex-col relative overflow-hidden">
+                    <div class="absolute top-0 right-0 bg-amber-500 text-white text-xs font-bold px-3 py-1 rounded-bl-xl">終極</div>
+                    <div class="text-amber-600 font-extrabold text-sm tracking-widest mb-2 uppercase">Stage 03</div>
+                    <h3 class="text-2xl font-bold text-stone-800 mb-6">命運武器 (永恆)</h3>
+                    
+                    <div class="bg-white/60 p-4 rounded-xl border border-amber-100 mb-4 flex-grow space-y-2">
+                        <span class="text-stone-500 text-xs font-bold uppercase mb-2 block">📥 獲取條件</span>
+                        <ul class="text-sm text-stone-700 space-y-1">
+                            <li>1. 擊敗 <span class="font-bold">[卡洛斯-困難]</span> 取得箱子</li>
+                            <li>2. 收集 <span class="text-blue-600 font-bold">命運武器氣息 x14</span></li>
+                            <li>3. 持有創世武器 (<span class="text-emerald-600 font-bold">不扣除</span>)</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bg-amber-100 p-4 rounded-xl border border-amber-200">
+                        <span class="text-amber-800 text-xs font-bold uppercase mb-2 block">📤 獲得物品</span>
+                        <div class="flex items-center font-bold text-amber-900">
+                            <span class="text-xl mr-2">👑</span> [命運武器]
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section: Enhance -->
+    <section id="enhance" class="w-full px-4 sm:px-8 lg:px-12 py-24 bg-white">
+        <div class="max-w-[1400px] mx-auto">
+            <h2 class="text-4xl font-bold text-stone-800 text-center mb-16">裝備強化與素材解析</h2>
+            
+            <!-- 素材表格 -->
+            <div class="bg-white rounded-2xl shadow-sm border border-stone-200 overflow-hidden mb-16">
+                <div class="table-responsive">
+                    <table class="w-full text-left text-lg">
+                        <thead class="bg-stone-50 text-stone-600 border-b border-stone-200">
+                            <tr>
+                                <th class="px-8 py-5 font-bold">素材名稱</th>
+                                <th class="px-8 py-5 font-bold">用途</th>
+                                <th class="px-8 py-5 font-bold">備註</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-stone-100">
+                            <tr class="hover:bg-stone-50 transition">
+                                <td class="px-8 py-6 font-bold text-emerald-700">大地結晶</td>
+                                <td class="px-8 py-6">神秘裝備 強化</td>
+                                <td class="px-8 py-6 text-stone-500 text-base">最高 Lv15，100% 成功</td>
+                            </tr>
+                            <tr class="hover:bg-stone-50 transition">
+                                <td class="px-8 py-6 font-bold text-cyan-700">晨曦露珠</td>
+                                <td class="px-8 py-6">永恆 / 創世 / 命運 裝備強化</td>
+                                <td class="px-8 py-6 text-stone-500 text-base">高階裝備必備 (最高 Lv15，機率性提升)</td>
+                            </tr>
+                            <tr class="hover:bg-stone-50 transition">
+                                <td class="px-8 py-6 font-bold text-purple-700">創世之種</td>
+                                <td class="px-8 py-6">漆黑 / 光輝 飾品強化</td>
+                                <td class="px-8 py-6 text-stone-500 text-base">飾品畢業關鍵 (最高 Lv15，機率性提升)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 星力圖表 -->
+            <div class="max-w-4xl mx-auto bg-stone-50 p-10 rounded-3xl shadow-inner border border-stone-200">
+                <h3 class="text-2xl font-bold text-emerald-800 mb-6 text-center">時裝星力成功率趨勢</h3>
+                <div class="chart-container">
+                    <canvas id="starForceChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="w-full bg-stone-900 text-stone-400 py-20">
+        <div class="max-w-[1400px] mx-auto px-12 text-center">
+            <h3 class="text-3xl font-bold text-white mb-6">想要獲取更詳盡的數據？</h3>
+            <p class="text-xl mb-12 text-stone-500">查閱完整的 BOSS 掉落表、強化數值與詳細設定</p>
+            <a href="https://docs.google.com/spreadsheets/d/1rSCzO4GX40Ll6ldtmOEtexJ0rnC0gZqZYKqj5FWQmhY/edit?gid=561484061#gid=561484061" target="_blank" class="inline-block bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-4 px-12 rounded-full text-xl shadow-xl transition transform hover:scale-105 hover:shadow-emerald-900/50">
+                🔗 打開詳細試算表 (Google Sheet)
+            </a>
+            <div class="mt-20 pt-10 border-t border-stone-800">
+                <p class="text-lg">祝你在小樹谷冒險愉快，早日達成全裝命運！</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function scrollToSection(id) {
+            const element = document.getElementById(id);
+            if (element) {
+                const headerOffset = 100;
+                const elementPosition = element.getBoundingClientRect().top;
+                const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+                window.scrollTo({ top: offsetPosition, behavior: "smooth" });
+            }
+        }
+        
+        function toggleMobileMenu() {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        }
+
+        const routineData = {
+            daily: [
+                {
+                    title: "登入與掛機",
+                    icon: "☀️",
+                    desc: "累積在線時間，領取每日補給。",
+                    rewards: ["光合素 (技能升級)", "生命之水 (勳章養成)", "20星卷"],
+                    tag: "基礎"
+                },
+                {
+                    title: "每日魔王",
+                    icon: "👹",
+                    desc: "單人挑戰，入場即扣次數。",
+                    rewards: ["麥吉硬幣", "各式方塊", "魔法靈氣"],
+                    note: "💡 換角可重複刷資源",
+                    tag: "必刷"
+                },
+                {
+                    title: "組隊副本 (PQ)",
+                    icon: "⚔️",
+                    desc: "綠水靈/101/海盜 各兩次。",
+                    rewards: [
+                        "戰地聯盟經驗 <span class='text-rose-500 font-bold'>500</span>",
+                        "經驗值 <span class='text-rose-500 font-bold'>66E+</span>",
+                        "副本硬幣 100枚 / 大地結晶",
+                        "25% 機率掉落卷軸"
+                    ],
+                    note: "🔥 戰地等級飆升唯一解",
+                    tag: "核心"
+                }
+            ],
+            weekly: [
+                {
+                    title: "極限怪物公園",
+                    icon: "🎡",
+                    desc: "月卡7次 / 無月卡5次 (每週)",
+                    rewards: [
+                        "冠軍硬幣 <span class='text-rose-500 font-bold'>3000</span> (唯一來源)",
+                        "當前等級 5% 經驗值",
+                        "副本硬幣 300枚"
+                    ],
+                    note: "💎 畢業飾品材料來源",
+                    tag: "極重要"
+                },
+                {
+                    title: "週魔王 (Weekly)",
+                    icon: "🐲",
+                    desc: "擊殺寶箱才算次數，獨立掉落。",
+                    rewards: ["創世/命運武器箱", "創世之種", "高階卷軸"],
+                    tag: "進階"
+                }
+            ]
+        };
+
+        function setRoutine(type) {
+            const container = document.getElementById('routine-container');
+            const btnDaily = document.getElementById('btn-daily');
+            const btnWeekly = document.getElementById('btn-weekly');
+
+            // Reset styles
+            const activeClass = "shadow-md bg-stone-800 text-white";
+            const inactiveClass = "text-stone-500 hover:text-stone-700";
+
+            if (type === 'daily') {
+                btnDaily.className = `px-8 py-3 rounded-xl text-lg font-bold transition-all ${activeClass}`;
+                btnWeekly.className = `px-8 py-3 rounded-xl text-lg font-bold transition-all ${inactiveClass}`;
+            } else {
+                btnWeekly.className = `px-8 py-3 rounded-xl text-lg font-bold transition-all ${activeClass}`;
+                btnDaily.className = `px-8 py-3 rounded-xl text-lg font-bold transition-all ${inactiveClass}`;
+            }
+
+            container.innerHTML = routineData[type].map(item => `
+                <div class="bg-white rounded-3xl p-8 border border-stone-200 shadow-sm hover:shadow-md hover:border-emerald-300 transition-all flex flex-col h-full relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 bg-stone-100 text-stone-500 text-xs font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider">${item.tag || '任務'}</div>
+                    <div class="flex items-center mb-6">
+                        <span class="text-4xl mr-4 transform group-hover:scale-110 transition duration-300">${item.icon}</span>
+                        <h3 class="text-2xl font-bold text-stone-800">${item.title}</h3>
+                    </div>
+                    <p class="text-stone-600 mb-6 text-lg leading-relaxed">${item.desc}</p>
+                    <div class="bg-stone-50 p-6 rounded-2xl border border-stone-100 flex-grow">
+                        <ul class="space-y-3">
+                            ${item.rewards.map(r => `<li class="text-stone-700 font-medium flex items-start"><span class="text-emerald-500 mr-2 mt-1">●</span> <span>${r}</span></li>`).join('')}
+                        </ul>
+                    </div>
+                    ${item.note ? `<div class="mt-6 text-sm font-bold text-rose-600 flex items-center bg-rose-50 p-3 rounded-xl"><span class="mr-2 text-lg">📢</span>${item.note}</div>` : ''}
+                </div>
+            `).join('');
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            setRoutine('daily');
+            
+            const ctx = document.getElementById('starForceChart').getContext('2d');
+            const labels = Array.from({length: 31}, (_, i) => i);
+            const dataPoints = labels.map(star => {
+                if (star < 10) return 75;
+                if (star < 20) return 35;
+                if (star < 29) return 7;
+                if (star === 29) return 2;
+                return 0;
+            });
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: '成功率 (%)',
+                        data: dataPoints,
+                        borderColor: '#059669',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.3,
+                        pointBackgroundColor: '#fff',
+                        pointBorderColor: '#059669',
+                        pointBorderWidth: 2,
+                        pointRadius: 4,
+                        pointHoverRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { 
+                            beginAtZero: true, 
+                            max: 100,
+                            grid: { color: '#f3f4f6' },
+                            ticks: { font: { family: "'Noto Sans TC', sans-serif" } }
+                        },
+                        x: { 
+                            title: { display: true, text: '當前星數', font: { weight: 'bold' } },
+                            grid: { display: false },
+                            ticks: { font: { family: "'Noto Sans TC', sans-serif" } }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: 'rgba(6, 78, 59, 0.9)',
+                            padding: 12,
+                            titleFont: { size: 14 },
+                            bodyFont: { size: 14 },
+                            callbacks: {
+                                label: function(context) {
+                                    return `成功率: ${context.parsed.y}%`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
