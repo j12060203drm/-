@@ -94,6 +94,7 @@
                 <!-- Desktop Menu -->
                 <div class="hidden xl:flex items-center space-x-4">
                     <button onclick="scrollToSection('hero')" class="hover:text-emerald-600 px-4 py-2 rounded-full hover:bg-emerald-50 text-stone-600 font-medium transition">核心目標</button>
+                    <button onclick="scrollToSection('urgent-guide')" class="bg-red-50 text-red-600 hover:text-red-700 hover:bg-red-100 px-4 py-2 rounded-full font-bold transition border border-red-200">⚠️ 必做清單</button>
                     <button onclick="scrollToSection('routine')" class="hover:text-emerald-600 px-4 py-2 rounded-full hover:bg-emerald-50 text-stone-600 font-medium transition">日常任務</button>
                     <button onclick="scrollToSection('growth-system')" class="hover:text-emerald-600 px-4 py-2 rounded-full hover:bg-emerald-50 text-stone-600 font-medium transition">技能與勳章</button>
                     <button onclick="scrollToSection('weapon-system')" class="hover:text-emerald-600 px-4 py-2 rounded-full hover:bg-emerald-50 text-stone-600 font-medium transition">武器進化</button>
@@ -112,6 +113,7 @@
         <div id="mobile-menu" class="hidden xl:hidden bg-white border-t border-stone-100 shadow-lg absolute w-full">
             <div class="px-4 pt-2 pb-4 space-y-2">
                 <button onclick="scrollToSection('hero'); toggleMobileMenu()" class="block w-full text-left px-4 py-3 text-stone-600 hover:bg-emerald-50 hover:text-emerald-600 rounded-xl transition font-medium">核心目標</button>
+                <button onclick="scrollToSection('urgent-guide'); toggleMobileMenu()" class="block w-full text-left px-4 py-3 text-red-600 bg-red-50 hover:bg-red-100 hover:text-red-700 rounded-xl transition font-bold border border-red-100">⚠️ 必做清單</button>
                 <button onclick="scrollToSection('routine'); toggleMobileMenu()" class="block w-full text-left px-4 py-3 text-stone-600 hover:bg-emerald-50 hover:text-emerald-600 rounded-xl transition font-medium">日常任務</button>
                 <button onclick="scrollToSection('growth-system'); toggleMobileMenu()" class="block w-full text-left px-4 py-3 text-stone-600 hover:bg-emerald-50 hover:text-emerald-600 rounded-xl transition font-medium">技能與勳章</button>
                 <button onclick="scrollToSection('weapon-system'); toggleMobileMenu()" class="block w-full text-left px-4 py-3 text-stone-600 hover:bg-emerald-50 hover:text-emerald-600 rounded-xl transition font-medium">武器進化</button>
@@ -143,6 +145,114 @@
                     <div class="text-6xl mb-6">🌱</div>
                     <h3 class="text-2xl font-bold mb-3 text-stone-800">每日積累</h3>
                     <p class="text-stone-600 leading-relaxed">透過光合素與勳章養成，獲得強大的專屬能力加成。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section: Urgent Guide (NEW) -->
+    <section id="urgent-guide" class="w-full px-4 sm:px-8 lg:px-12 py-16 bg-red-50 border-y border-red-100">
+        <div class="max-w-[1400px] mx-auto">
+            <div class="text-center mb-10">
+                <h2 class="text-3xl lg:text-4xl font-extrabold text-red-800 mb-4 flex items-center justify-center">
+                    <span class="text-4xl mr-3">⚠️</span> 進遊戲馬上要做的事 (必讀！)
+                </h2>
+                <p class="text-lg text-red-700 font-medium">請務必依照清單執行，避開已知端口 Bug (不要問為什麼，照做就對了！)</p>
+            </div>
+
+            <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
+                <!-- Column 1: Critical Bugs & Setup -->
+                <div class="bg-white p-8 rounded-2xl border-l-8 border-red-500 shadow-sm hover:shadow-md transition">
+                    <h3 class="text-xl font-bold text-stone-800 mb-6 flex items-center">
+                        <span class="bg-red-100 text-red-600 p-2 rounded-lg mr-3">🔧</span> 關鍵設定與 Bug 迴避
+                    </h3>
+                    <ul class="space-y-4 text-stone-700">
+                        <li class="flex items-start">
+                            <span class="font-bold text-red-600 min-w-[1.5rem] text-lg">1.</span>
+                            <div>
+                                <strong class="text-stone-900">快速轉職 (直升5轉)：</strong>
+                                <p class="text-sm mt-1">打開消耗欄 <span class="font-bold text-emerald-600">[小樹谷萬能選單]</span> > 職業中心 > 快速轉職。</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="font-bold text-red-600 min-w-[1.5rem] text-lg">2.</span>
+                            <div>
+                                <strong class="text-stone-900">清除燈泡：</strong>
+                                <p class="text-sm mt-1">職業中心 > 清除燈泡。</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="font-bold text-red-600 min-w-[1.5rem] text-lg">3.</span>
+                            <div>
+                                <strong class="text-stone-900">修復鍵盤 Bug (重要!!!)：</strong>
+                                <p class="text-sm mt-1 bg-red-50 p-2 rounded border border-red-100">
+                                    清空鍵盤 > 儲存 > 重登(出角色再進) > 按 <span class="font-bold">鍵盤重製</span>。
+                                </p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="font-bold text-red-600 min-w-[1.5rem] text-lg">4.</span>
+                            <div>
+                                <strong class="text-stone-900">功能禁用 (Bug)：</strong>
+                                <p class="text-sm mt-1"><span class="font-bold text-red-600">小屋</span> 是壞的 (勿碰)；<span class="font-bold text-red-600">創角燃燒</span> 是壞的 (勿用)。</p>
+                                <p class="text-xs text-stone-500 mt-1">*燃燒道具請領取入谷獎勵使用。</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="font-bold text-red-600 min-w-[1.5rem] text-lg">5.</span>
+                            <div>
+                                <strong class="text-stone-900">命名限制 (一鍵戰地)：</strong>
+                                <p class="text-sm mt-1">名字勿超過 <span class="font-bold text-red-600">5個中文</span> 或 <span class="font-bold text-red-600">10個英數</span>，否則功能失效。</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Column 2: Equipment & Resources -->
+                <div class="bg-white p-8 rounded-2xl border-l-8 border-amber-500 shadow-sm hover:shadow-md transition">
+                    <h3 class="text-xl font-bold text-stone-800 mb-6 flex items-center">
+                        <span class="bg-amber-100 text-amber-600 p-2 rounded-lg mr-3">🎒</span> 裝備與資源領取
+                    </h3>
+                    <ul class="space-y-4 text-stone-700">
+                        <li class="flex items-start">
+                            <span class="font-bold text-amber-500 min-w-[1.5rem] text-lg">6.</span>
+                            <div>
+                                <strong class="text-stone-900">領取獎勵：</strong>
+                                <p class="text-sm mt-1">記得領取 入谷獎勵 / 等級獎勵 / 帳號等級獎勵。</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="font-bold text-amber-500 min-w-[1.5rem] text-lg">7.</span>
+                            <div>
+                                <strong class="text-stone-900">裝備箱選擇 (選錯去分身拿)：</strong>
+                                <div class="grid grid-cols-2 gap-2 mt-2 text-sm bg-stone-50 p-2 rounded">
+                                    <div><span class="font-bold text-emerald-600">深淵：</span> 帽子 / 上衣 / 褲子</div>
+                                    <div><span class="font-bold text-emerald-600">航海：</span> 肩膀 / 披風 / 手套 / 鞋子</div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="font-bold text-amber-500 min-w-[1.5rem] text-lg">8.</span>
+                            <div>
+                                <strong class="text-stone-900">ARC 升級：</strong>
+                                <p class="text-sm mt-1">請先選好 6 顆符文再升級。</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="font-bold text-amber-500 min-w-[1.5rem] text-lg">9.</span>
+                            <div>
+                                <strong class="text-stone-900">洗潛能：</strong>
+                                <p class="text-sm mt-1">一律用 <span class="font-bold">萬能選單</span> 的潛能系統洗。</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="font-bold text-amber-500 min-w-[1.5rem] text-lg">10.</span>
+                            <div>
+                                <strong class="text-stone-900">倉庫使用：</strong>
+                                <p class="text-sm mt-1">身上需有 <span class="font-bold">100 楓幣</span> 以上。</p>
+                            </div>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
